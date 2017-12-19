@@ -3,16 +3,12 @@ var avatars = ['01', '02', '03', '04', '05', '06', '07', '08'];
 var titles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var checkInOut = ['12:00', '13:00', '14:00'];
 var allFeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var getAllFeatures = function(findAllFeatures) {
-  var featuresAd = [];
-  var randomFeatures = sattoloRandomise(findAllFeatures);
-  for (var i = 0; i < getRandomElement(0, 5); i++){
-    featuresAd[i] = randomFeatures.pop();
-  }
-  return featuresAd;
+var getFeatures = function(features) {
+  var randomFeatures = sattoloRandomise(features);
+  return randomFeatures.slice(0, getRandomNumber(0, 5));
 };
-var getRandomElement = function (min, max) {
-  return ((Math.random * max - min) + min);
+var getRandomNumber = function (min, max) {
+  return (Math.floor((Math.random() * max - min) + min));
 };
 var sattoloRandomise = function (block) {
   var replace = 0;
@@ -20,10 +16,10 @@ var sattoloRandomise = function (block) {
   var j = 0;
   while (i > 1) {
     i --;
-	j = getRandomElement(i);
+	j = getRandomNumber(0, i - 1);
 	replace = block[j];
 	block[j] = block[i];
-	block[i] = block[replace];
+	block[i] = replace;
   };
   return block;
 };
@@ -41,18 +37,18 @@ var createAd = function (avatarAd, titleAd, checkInOutAd, allFeaturesAd) {
   avatarAd = sattoloRandomise(avatarAd);
   titleAd = sattoloRandomise(titleAd);
   for (var i = 0; i < 8; i++) {
-    var locationX = getRandomElement(300, 900);
-	var locationY = getRandomElement(100, 500);
+    var locationX = getRandomNumber(300, 900);
+	var locationY = getRandomNumber(100, 500);
 	var advertisementAvatar = avatarAd.pop();
 	var advertisementTitle = titleAd.pop();
 	var advertisemenAddress = locationX + ', ' + locationY;
-	var advertisementPrice = getRandomElement(1000, 1000000);
-	var advertisementType = getRandomElement(0, 2);
-	var advertisementRoom = getRandomElement(1, 5);
-	var advertisementGuests = getRandomElement(1, 30);
-	var advertisementCheckIn = getRandomElement(0, 2);
-	var advertisementCheckOut = getRandomElement(0, 2);
-	var advertisementFeatures = getAllFeatures(allFeaturesAd);
+	var advertisementPrice = getRandomNumber(1000, 1000000);
+	var advertisementType = getRandomNumber(0, 2);
+	var advertisementRoom = getRandomNumber(1, 5);
+	var advertisementGuests = getRandomNumber(1, 30);
+	var advertisementCheckIn = getRandomNumber(0, 2);
+	var advertisementCheckOut = getRandomNumber(0, 2);
+	var advertisementFeatures = getFeatures(allFeaturesAd);
     advertisements[i] = {
       author : {
         avatar : 'img/avatars/user' + advertisementAvatar +'.png',
