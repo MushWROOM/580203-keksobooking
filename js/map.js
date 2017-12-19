@@ -1,0 +1,126 @@
+'use strict';
+var avatars = ['01', '02', '03', '04', '05', '06', '07', '08'];
+var titles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+var checkInOut = ['12:00', '13:00', '14:00'];
+var allFeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var getAllFeatures = function(findAllFeatures) {
+  var featuresAd = [];
+  var randomFeatures = sattoloRandomise(findAllFeatures);
+  for (var i = 0; i < getRandomElement(0, 5); i++){
+    featuresAd[i] = randomFeatures.pop();
+  }
+  return featuresAd;
+};
+var getRandomElement = function (min, max) {
+  return ((Math.random * max - min) + min);
+};
+var sattoloRandomise = function (block) {
+  var replace = 0;
+  var i = block.length;
+  var j = 0;
+  while (i > 1) {
+    i --;
+	j = getRandomElement(i);
+	replace = block[j];
+	block[j] = block[i];
+	block[i] = block[replace];
+  };
+  return block;
+};
+var getType = function (numberOfType) {
+  if (numberOfType = 0) {
+    return 'Квартира';
+  } else if (numberOfType = 1) {
+    return 'Дом';
+  } else {
+    return 'Бунгало';
+  }  
+};
+var createAd = function (avatarAd, titleAd, checkInOutAd, allFeaturesAd) {
+  var advertisements = [];
+  avatarAd = sattoloRandomise(avatarAd);
+  titleAd = sattoloRandomise(titleAd);
+  for (var i = 0; i < 8; i++) {
+    var locationX = getRandomElement(300, 900);
+	var locationY = getRandomElement(100, 500);
+	var advertisementAvatar = avatarAd.pop();
+	var advertisementTitle = titleAd.pop();
+	var advertisemenAddress = locationX + ', ' + locationY;
+	var advertisementPrice = getRandomElement(1000, 1000000);
+	var advertisementType = getRandomElement(0, 2);
+	var advertisementRoom = getRandomElement(1, 5);
+	var advertisementGuests = getRandomElement(1, 30);
+	var advertisementCheckIn = getRandomElement(0, 2);
+	var advertisementCheckOut = getRandomElement(0, 2);
+	var advertisementFeatures = getAllFeatures(allFeaturesAd);
+    advertisements[i] = {
+      author : {
+        avatar : 'img/avatars/user' + advertisementAvatar +'.png',
+	  },
+	  offer : {
+        title : advertisementTitle,
+		address : advertisemenAddress,
+		price : advertisementPrice,
+		type : getType[advertisementType],
+		rooms : advertisementRoom,
+		guests : advertisementGuests,
+		checkin : checkInOutAd[advertisementCheckIn],
+		checkout : checkInOutAd[advertisementCheckOut],
+		features : advertisementFeatures,
+		description : '',
+		photos : []
+	  },
+	  adLocation : {
+		  x : locationX,
+		  y : locationY
+	  }
+	}
+  };
+  return advertisements;
+};
+var bookingTemplate = document.querySelector('template').content;
+var bookingElement = bookingTemplate.querySelector('.map__card').cloneNode(true);
+var doesFeatureExist = function (someFeatures) {
+  for (var i = 0; i < 6; i++){
+    for (var j = 0; j < someFeatures.offer.features.length; j++){
+		var existence = 0;
+		if (document.querySelector('.feature--' + someFeatures.offer.features[i])) {
+			existence ++;
+		}
+	}
+	if (existence = 0) {
+		bookingElement.querySelectorAll('.feature')[i].classList.add('hidden');
+	}
+  }
+};
+document.querySelector('.map').classList.remove('.map--faded');
+var similarButton = document.querySelector('.map__pins');
+var createButton = function (buttonData) {
+  var buttonTemplate = bookingTemplate.querySelector('button').cloneNode(true);
+  buttonTemplate.style.left = buttonData.adLocation.x + 'px';
+  buttonTemplate.style.top = buttonData.adLocation.y + 'px';
+  buttonTemplate.querySelector('img').setAttribute('src', buttonData.author.avatar);
+};
+var appendFragment = function (buttonData) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < buttonData.length; i++) {
+    fragment.appendChild(createButton(buttonData[i]));
+  }
+  return fragment;	
+};
+var buttons = createAd(avatars, titles, checkInOut, allFeatures);
+var bookingInfo = function (bookingData) {
+  bookingElement.querySelector('h3').textContent = bookingData.offer.title;
+  bookingElement.querySelector('small').textContent = bookingData.offer.address;
+  bookingElement.querySelector('.popup__price').textContent = bookingData.offer.price + '&#x20bd;/ночь';
+  bookingElement.querySelector('h4').textContent = bookingData.offer.type;
+  var allP = bookingElement.querySelectorAll('p');
+  allP[allP.length - 3].textContent = bookingData.offer.rooms + ' для ' + bookingData.offer.guests + ' гостей';
+  allP[allP.length - 2].textContent = 'Заезд после ' + bookingData.offer.checkin + ', выезд до ' + bookingData.offer.checkout;
+  doesFeatureExist(bookingData);
+  allP[allP.length - 1].textContent = bookingData.offer.description;
+  bookingElement.querySelector('.popup__avatar').querySelector('img').setAttribute('src', bookingData.author.avatar);
+};
+	
+similarButton.appendChild(appendFragment(buttons));
+document.querySelector('.map').insertBefore(bookingInfo(buttons), document.querySelector('.map__filters-container'));
