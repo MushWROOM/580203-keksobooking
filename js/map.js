@@ -8,7 +8,7 @@ var getFeatures = function(features) {
   return randomFeatures.slice(0, getRandomNumber(0, 5));
 };
 var getRandomNumber = function (min, max) {
-  return (Math.floor((Math.random() * max - min) + min));
+  return (Math.floor((Math.random() * (max - min)) + min));
 };
 var sattoloRandomise = function (block) {
   var replace = 0;
@@ -90,17 +90,16 @@ var doesFeatureExist = function (someFeatures) {
   }
 };
 document.querySelector('.map').classList.remove('.map--faded');
-var similarButton = document.querySelector('.map__pins');
+var placeButton = document.querySelector('.map__pins');
 var createButton = function (buttonData) {
-  var buttonTemplate = bookingTemplate.querySelector('button').cloneNode(true);
-  buttonTemplate.style.left = buttonData.adLocation.x + 'px';
-  buttonTemplate.style.top = buttonData.adLocation.y + 'px';
-  buttonTemplate.querySelector('img').setAttribute('src', buttonData.author.avatar);
+  var buttonTemplate = '<button style="left: ' + buttonData.adLocation.x + 'px' + '; top: ' + buttonData.adLocation.y + 'px' + '; " class="map__pin">' +
+  '<img src="' + buttonData.author.avatar + '" width="40" height="40" draggable="false">' +
+'</button>';
 };
 var appendFragment = function (buttonData) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < buttonData.length; i++) {
-    fragment.appendChild(createButton(buttonData[i]));
+    fragment.insertAdjacentHTML('beforeend', createButton(buttonData[i]));
   }
   return fragment;	
 };
@@ -118,5 +117,5 @@ var bookingInfo = function (bookingData) {
   bookingElement.querySelector('.popup__avatar').querySelector('img').setAttribute('src', bookingData.author.avatar);
 };
 	
-similarButton.appendChild(appendFragment(buttons));
+placeButton.appendChild(appendFragment(buttons));
 document.querySelector('.map').insertBefore(bookingInfo(buttons), document.querySelector('.map__filters-container'));
