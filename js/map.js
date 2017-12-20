@@ -3,7 +3,7 @@ var avatars = ['01', '02', '03', '04', '05', '06', '07', '08'];
 var titles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var checkInOut = ['12:00', '13:00', '14:00'];
 var allFeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var getFeatures = function(features) {
+var getFeatures = function (features) {
   var randomFeatures = sattoloRandomise(features);
   return randomFeatures.slice(0, getRandomNumber(0, 5));
 };
@@ -15,93 +15,101 @@ var sattoloRandomise = function (block) {
   var i = block.length;
   var j = 0;
   while (i > 1) {
-    i --;
-	j = getRandomNumber(0, i - 1);
-	replace = block[j];
-	block[j] = block[i];
-	block[i] = replace;
-  };
+    i--;
+    j = getRandomNumber(0, i - 1);
+    replace = block[j];
+    block[j] = block[i];
+    block[i] = replace;
+  }
   return block;
 };
 var getType = function (numberOfType) {
-  if (numberOfType = 0) {
+  if (numberOfType === 0) {
     return 'Квартира';
-  } else if (numberOfType = 1) {
+  } else if (numberOfType === 1) {
     return 'Дом';
   } else {
     return 'Бунгало';
-  }  
+  }
 };
 var createAd = function (avatarAd, titleAd, checkInOutAd, allFeaturesAd) {
   var advertisements = [];
-  avatarAd = sattoloRandomise(avatarAd);
-  titleAd = sattoloRandomise(titleAd);
+  var randomAvatars = sattoloRandomise(avatarAd);
+  var randomTitles = sattoloRandomise(titleAd);
   for (var i = 0; i < 8; i++) {
     var locationX = getRandomNumber(300, 900);
-	var locationY = getRandomNumber(100, 500);
-	var advertisementAvatar = avatarAd.pop();
-	var advertisementTitle = titleAd.pop();
-	var advertisemenAddress = locationX + ', ' + locationY;
-	var advertisementPrice = getRandomNumber(1000, 1000000);
-	var advertisementType = getRandomNumber(0, 2);
-	var advertisementRoom = getRandomNumber(1, 5);
-	var advertisementGuests = getRandomNumber(1, 30);
-	var advertisementCheckIn = getRandomNumber(0, 2);
-	var advertisementCheckOut = getRandomNumber(0, 2);
-	var advertisementFeatures = getFeatures(allFeaturesAd);
+    var locationY = getRandomNumber(100, 500);
+    var advertisementAvatar = randomAvatars.pop();
+    var advertisementTitle = randomTitles.pop();
+    var advertisemenAddress = locationX + ', ' + locationY;
+    var advertisementPrice = getRandomNumber(1000, 1000000);
+    var advertisementType = getRandomNumber(0, 2);
+    var advertisementRoom = getRandomNumber(1, 5);
+    var advertisementGuests = getRandomNumber(1, 30);
+    var advertisementCheckIn = getRandomNumber(0, 2);
+    var advertisementCheckOut = getRandomNumber(0, 2);
+    var advertisementFeatures = getFeatures(allFeaturesAd);
     advertisements[i] = {
-      author : {
-        avatar : 'img/avatars/user' + advertisementAvatar +'.png',
-	  },
-	  offer : {
-        title : advertisementTitle,
-		address : advertisemenAddress,
-		price : advertisementPrice,
-		type : getType[advertisementType],
-		rooms : advertisementRoom,
-		guests : advertisementGuests,
-		checkin : checkInOutAd[advertisementCheckIn],
-		checkout : checkInOutAd[advertisementCheckOut],
-		features : advertisementFeatures,
-		description : '',
-		photos : []
-	  },
-	  adLocation : {
-		  x : locationX,
-		  y : locationY
-	  }
-	}
-  };
+      author: {
+        avatar: 'img/avatars/user' + advertisementAvatar + '.png',
+      },
+      offer: {
+        title: advertisementTitle,
+        address: advertisemenAddress,
+        price: advertisementPrice,
+        type: getType[advertisementType],
+        rooms: advertisementRoom,
+        guests: advertisementGuests,
+        checkin: checkInOutAd[advertisementCheckIn],
+        checkout: checkInOutAd[advertisementCheckOut],
+        features: advertisementFeatures,
+        description: '',
+        photos: []
+      },
+      adLocation: {
+        x: locationX,
+        y: locationY
+      }
+    };
+  }
   return advertisements;
 };
 var bookingTemplate = document.querySelector('template').content;
 var bookingElement = bookingTemplate.querySelector('.map__card').cloneNode(true);
 var doesFeatureExist = function (someFeatures) {
-  for (var i = 0; i < 6; i++){
-    for (var j = 0; j < someFeatures.offer.features.length; j++){
-		var existence = 0;
-		if (document.querySelector('.feature--' + someFeatures.offer.features[i])) {
-			existence ++;
-		}
-	}
-	if (existence = 0) {
-		bookingElement.querySelectorAll('.feature')[i].classList.add('hidden');
-	}
+  for (var i = 0; i < 6; i++) {
+    for (var j = 0; j < someFeatures.offer.features.length; j++) {
+      var existence = 0;
+      if (document.querySelector('.feature--' + someFeatures.offer.features[i])) {
+        existence++;
+      }
+    }
+    if (existence === 0) {
+      bookingElement.querySelectorAll('.feature')[i].classList.add('hidden');
+    }
   }
 };
 document.querySelector('.map').classList.remove('.map--faded');
 var placeButton = document.querySelector('.map__pins');
 var createButton = function (buttonData) {
-  var buttonTemplate = '<button style="left: ' + buttonData.adLocation.x + 'px' + '; top: ' + buttonData.adLocation.y + 'px' + '; " class="map__pin">' +
-  '<img src="' + buttonData.author.avatar + '" width="40" height="40" draggable="false">' +
-'</button>';
+  var buttonTemplate = document.createElement('button');
+  buttonTemplate.className = 'map__pin';
+  buttonTemplate.style.left = buttonData.adLocation.x + 'px';
+  buttonTemplate.style.top = buttonData.adLocation.y + 'px';
+  var imgTemplate = document.createElement('img');
+  imgTemplate.setAttribute('width', 40);
+  imgTemplate.setAttribute('height', 40);
+  imgTemplate.setAttribute('draggable', false);
+  imgTemplate.setAttribute('src', buttonData.author.avatar);
+  buttonTemplate.appendChild(imgTemplate);
+  return buttonTemplate;
 };
 var appendFragment = function (buttonData) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < buttonData.length; i++) {
-    fragment.insertAdjacentHTML('beforeend', createButton(buttonData[i]));
+    fragment.appendChild(createButton(buttonData[i]));
   }
-  return fragment;	
+  return fragment;
 };
 var buttons = createAd(avatars, titles, checkInOut, allFeatures);
 var bookingInfo = function (bookingData) {
@@ -116,6 +124,5 @@ var bookingInfo = function (bookingData) {
   allP[allP.length - 1].textContent = bookingData.offer.description;
   bookingElement.querySelector('.popup__avatar').querySelector('img').setAttribute('src', bookingData.author.avatar);
 };
-	
 placeButton.appendChild(appendFragment(buttons));
 document.querySelector('.map').insertBefore(bookingInfo(buttons), document.querySelector('.map__filters-container'));
