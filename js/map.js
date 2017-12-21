@@ -2,10 +2,12 @@
 var avatars = ['01', '02', '03', '04', '05', '06', '07', '08'];
 var titles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var checkInOut = ['12:00', '13:00', '14:00'];
-var allFeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var getFeatures = function (features) {
-  var randomFeatures = sattoloRandomise(features);
-  return randomFeatures.slice(0, getRandomNumber(0, 5));
+var getFeatures = function () {
+  var enabledFeatures = [0, 0, 0, 0, 0, 0];
+  for (var i = 0; i < getRandomNumber(0,6); i++) {
+    enabledFeatures[getRandomNumber(0,5)] = 1;
+  }
+  return enabledFeatures;
 };
 var getRandomNumber = function (min, max) {
   return (Math.floor((Math.random() * (max - min)) + min));
@@ -32,7 +34,7 @@ var getType = function (numberOfType) {
     return 'Бунгало';
   }
 };
-var createAd = function (avatarAd, titleAd, checkInOutAd, allFeaturesAd) {
+var createAd = function (avatarAd, titleAd, checkInOutAd) {
   var advertisements = [];
   var randomAvatars = sattoloRandomise(avatarAd);
   var randomTitles = sattoloRandomise(titleAd);
@@ -48,7 +50,7 @@ var createAd = function (avatarAd, titleAd, checkInOutAd, allFeaturesAd) {
     var advertisementGuests = getRandomNumber(1, 30);
     var advertisementCheckIn = getRandomNumber(0, 2);
     var advertisementCheckOut = getRandomNumber(0, 2);
-    var advertisementFeatures = getFeatures(allFeaturesAd);
+    var advertisementFeatures = getFeatures();
     advertisements[i] = {
       author: {
         avatar: 'img/avatars/user' + advertisementAvatar + '.png',
@@ -77,18 +79,11 @@ var createAd = function (avatarAd, titleAd, checkInOutAd, allFeaturesAd) {
 var bookingTemplate = document.querySelector('template').content;
 var bookingElement = bookingTemplate.querySelector('.map__card').cloneNode(true);
 var doesFeatureExist = function (someFeatures) {
-  var listOfFeatures = document.querySelectorAll('.feature');
-  for (var i = 0; i < listOfFeatures.length; i++) {
-	  listOfFeatures[i].classList.add('hidden')
-    for (var j = 0; j < someFeatures.offer.features.length; j++) {
-      var existence = 0;
-      if (listOfFeatures[i].classList.contains('.feature--' + someFeatures.offer.features[j])) {
-        existence++;
-      }
-    }
-    if (existence === 1) {
-      listOfFeatures[i].classList.remove('hidden');
-    }
+  var featuresList = document.querySelector('.popup__features').querySelectorAll('.features');
+  for (var i = 0; i < 6; i++) {
+    if (someFeatures[i] === 0) {
+      featureList[i].classList.add('hidden');
+	}
   }
 };
 document.querySelector('.map').classList.remove('.map--faded');
@@ -113,7 +108,7 @@ var appendFragment = function (buttonData) {
   }
   return fragment;
 };
-var buttons = createAd(avatars, titles, checkInOut, allFeatures);
+var buttons = createAd(avatars, titles, checkInOut);
 var bookingInfo = function (bookingData) {
   bookingElement.querySelector('h3').textContent = bookingData.offer.title;
   bookingElement.querySelector('small').textContent = bookingData.offer.address;
@@ -122,7 +117,7 @@ var bookingInfo = function (bookingData) {
   var allP = bookingElement.querySelectorAll('p');
   allP[allP.length - 3].textContent = bookingData.offer.rooms + ' для ' + bookingData.offer.guests + ' гостей';
   allP[allP.length - 2].textContent = 'Заезд после ' + bookingData.offer.checkin + ', выезд до ' + bookingData.offer.checkout;
-  doesFeatureExist(bookingData);
+  doesFeatureExist(bookingData.offer.features);
   allP[allP.length - 1].textContent = bookingData.offer.description;
   bookingElement.querySelector('.popup__avatar').setAttribute('src', bookingData.author.avatar);
   
