@@ -77,15 +77,17 @@ var createAd = function (avatarAd, titleAd, checkInOutAd, allFeaturesAd) {
 var bookingTemplate = document.querySelector('template').content;
 var bookingElement = bookingTemplate.querySelector('.map__card').cloneNode(true);
 var doesFeatureExist = function (someFeatures) {
-  for (var i = 0; i < 6; i++) {
+  var listOfFeatures = document.querySelectorAll('.feature');
+  for (var i = 0; i < listOfFeatures.length; i++) {
+	  listOfFeatures[i].classList.add('hidden')
     for (var j = 0; j < someFeatures.offer.features.length; j++) {
       var existence = 0;
-      if (document.querySelector('.feature--' + someFeatures.offer.features[i])) {
+      if (listOfFeatures[i].classList.contains('.feature--' + someFeatures.offer.features[j])) {
         existence++;
       }
     }
-    if (existence === 0) {
-      bookingElement.querySelectorAll('.feature')[i].classList.add('hidden');
+    if (existence === 1) {
+      listOfFeatures[i].classList.remove('hidden');
     }
   }
 };
@@ -122,7 +124,9 @@ var bookingInfo = function (bookingData) {
   allP[allP.length - 2].textContent = 'Заезд после ' + bookingData.offer.checkin + ', выезд до ' + bookingData.offer.checkout;
   doesFeatureExist(bookingData);
   allP[allP.length - 1].textContent = bookingData.offer.description;
-  bookingElement.querySelector('.popup__avatar').querySelector('img').setAttribute('src', bookingData.author.avatar);
+  bookingElement.querySelector('.popup__avatar').setAttribute('src', bookingData.author.avatar);
+  
+  return bookingElement;
 };
 placeButton.appendChild(appendFragment(buttons));
-document.querySelector('.map').insertBefore(bookingInfo(buttons), document.querySelector('.map__filters-container'));
+document.querySelector('.map').insertBefore(bookingInfo(buttons[0]), document.querySelector('.map__filters-container'));
