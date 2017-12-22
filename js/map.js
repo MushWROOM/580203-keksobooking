@@ -123,4 +123,24 @@ var bookingInfo = function (bookingData) {
   return bookingElement;
 };
 placeButton.appendChild(appendFragment(buttons));
-document.querySelector('.map').insertBefore(bookingInfo(buttons[0]), document.querySelector('.map__filters-container'));
+//document.querySelector('.map').insertBefore(bookingInfo(buttons[0]), document.querySelector('.map__filters-container'));
+
+var mapPinMain = document.querySelector('.map__pin--main');
+var map = document.querySelector('.map');
+var noticeForm = document.querySelector('.notice__form');
+var mapPins = document.querySelector('.map__pins');
+var clickedPin = null;
+mapPinMain.addEventListener('mouseup', function() {
+  map.classList.remove('map--faded');
+  noticeForm.classList.remove('notice__form--disabled');
+});
+for (var i = 0; i < 8; i++) {
+  mapPins.querySelectorAll('.map__pin')[i].addEventListener('click', function(evt) {
+	if (mapPins.querySelector('.map__pin--active')) {
+      mapPins.querySelector('.map__pin--active').classList.remove('map__pin--active');
+    }
+	clickedPin = evt.currentTarget;
+	clickedPin.classList.add('map__pin--active');
+	document.querySelector('.map').insertBefore(bookingInfo(buttons[3]), document.querySelector('.map__filters-container'));
+  })
+};
