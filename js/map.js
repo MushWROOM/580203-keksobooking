@@ -4,8 +4,8 @@ var titles = ['Большая уютная квартира', 'Маленька�
 var checkInOut = ['12:00', '13:00', '14:00'];
 var getFeatures = function () {
   var enabledFeatures = [0, 0, 0, 0, 0, 0];
-  for (var i = 0; i < getRandomNumber(0,6); i++) {
-    enabledFeatures[getRandomNumber(0,5)] = 1;
+  for (var i = 0; i < getRandomNumber(0, 6); i++) {
+    enabledFeatures[getRandomNumber(0, 5)] = 1;
   }
   return enabledFeatures;
 };
@@ -82,8 +82,8 @@ var doesFeatureExist = function (someFeatures, bookingDoc) {
   var featuresList = bookingDoc.querySelector('.popup__features').querySelectorAll('.feature');
   for (var i = 0; i < 6; i++) {
     if (someFeatures[i] === 0) {
-      featuresList[i].classList.add('hidden');
-	}
+      featuresList[i].style.display = 'none';
+    }
   }
 };
 document.querySelector('.map').classList.remove('.map--faded');
@@ -120,7 +120,6 @@ var bookingInfo = function (bookingData) {
   doesFeatureExist(bookingData.offer.features, bookingElement);
   allP[allP.length - 1].textContent = bookingData.offer.description;
   bookingElement.querySelector('.popup__avatar').setAttribute('src', bookingData.author.avatar);
-  
   return bookingElement;
 };
 placeButton.appendChild(appendFragment(buttons));
