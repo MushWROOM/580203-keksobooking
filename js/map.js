@@ -78,8 +78,8 @@ var createAd = function (avatarAd, titleAd, checkInOutAd) {
 };
 var bookingTemplate = document.querySelector('template').content;
 var bookingElement = bookingTemplate.querySelector('.map__card').cloneNode(true);
-var doesFeatureExist = function (someFeatures) {
-  var featuresList = document.querySelector('.popup__features').querySelectorAll('.features');
+var doesFeatureExist = function (someFeatures, bookingDoc) {
+  var featuresList = bookingDoc.querySelector('.popup__features').querySelectorAll('.features');
   for (var i = 0; i < 6; i++) {
     if (someFeatures[i] === 0) {
       featureList[i].classList.add('hidden');
@@ -117,7 +117,7 @@ var bookingInfo = function (bookingData) {
   var allP = bookingElement.querySelectorAll('p');
   allP[allP.length - 3].textContent = bookingData.offer.rooms + ' для ' + bookingData.offer.guests + ' гостей';
   allP[allP.length - 2].textContent = 'Заезд после ' + bookingData.offer.checkin + ', выезд до ' + bookingData.offer.checkout;
-  doesFeatureExist(bookingData.offer.features);
+  doesFeatureExist(bookingData.offer.features, bookingElement);
   allP[allP.length - 1].textContent = bookingData.offer.description;
   bookingElement.querySelector('.popup__avatar').setAttribute('src', bookingData.author.avatar);
   
