@@ -79,10 +79,10 @@ var createAd = function (avatarAd, titleAd, checkInOutAd) {
 var bookingTemplate = document.querySelector('template').content;
 var bookingElement = bookingTemplate.querySelector('.map__card').cloneNode(true);
 var doesFeatureExist = function (someFeatures, bookingDoc) {
-  var featuresList = bookingDoc.querySelector('.popup__features').querySelectorAll('.features');
+  var featuresList = bookingDoc.querySelector('.popup__features').querySelectorAll('.feature');
   for (var i = 0; i < 6; i++) {
     if (someFeatures[i] === 0) {
-      featureList[i].classList.add('hidden');
+      featuresList[i].classList.add('hidden');
 	}
   }
 };
